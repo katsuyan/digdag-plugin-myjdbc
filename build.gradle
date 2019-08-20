@@ -1,0 +1,89 @@
+plugins {
+    id 'net.ltgt.apt' version '0.9'
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'net.ltgt.apt'
+
+group = 'com.github.katsuyan'
+version = '0.1.1'
+
+def digdagVersion = '0.9.24'
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven {
+        url 'https://dl.bintray.com/digdag/maven'
+    }
+}
+
+configurations {
+    provided
+}
+
+dependencies {
+    provided 'io.digdag:digdag-spi:' + digdagVersion
+    provided 'io.digdag:digdag-standards:' + digdagVersion
+    provided 'io.digdag:digdag-plugin-utils:' + digdagVersion  // this should be 'compile' once digdag 0.8.2 is released to a built-in repository
+    compileOnly "org.immutables:value:2.3.9:annotations"
+    apt "org.immutables:value:2.3.9"
+
+    compile 'mysql:mysql-connector-java:5.1.44'
+
+    testCompile  "io.digdag:digdag-tests:" + digdagVersion
+
+    testCompileOnly "org.immutables:value:2.3.9:annotations"
+    testApt "org.immutables:value:2.3.9"
+
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.hamcrest:hamcrest-library:1.3'
+//    testCompile 'org.mockito:mockito-core:1.10.19'
+//    testCompile 'pl.pragmatists:JUnitParams:1.0.5'
+
+}
+
+sourceSets {
+    main {
+        compileClasspath += configurations.provided
+        test.compileClasspath += configurations.provided
+        test.runtimeClasspath += configurations.provided
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            // artifactId 'project1-sample'        
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "$buildDir/repo"
+        }
+    }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+javadoc {
+    options {
+        locale = 'en_US'
+        encoding = 'UTF-8'
+    }
+}
+
