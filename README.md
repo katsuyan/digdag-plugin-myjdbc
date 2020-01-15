@@ -2,8 +2,10 @@
 
 Digdag `myjdbc>` operator plugin to execute a query.
 
-**Caution**: This plugin is development.
-
+## Caution
+This plugin is in development.
+So, this plugin is not for general use for all databases.
+If you want to use specific database, you should change sql in [this code](https://github.com/katsuyan/digdag-plugin-myjdbc/blob/master/src/main/java/com/github/katsuyan/digdag/plugin/myjdbc/MyjdbcConnection.java).
 
 ## configuration
 
